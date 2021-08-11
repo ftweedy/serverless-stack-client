@@ -14,6 +14,9 @@ import Settings from "./containers/Settings";
 export default function Routes() {
   return (
     <Switch>
+      <Route exact path="/">
+        <Home />
+      </Route>
       <UnauthenticatedRoute exact path="/login">
         <Login />
       </UnauthenticatedRoute>
@@ -29,6 +32,9 @@ export default function Routes() {
       <AuthenticatedRoute exact path="/notes/:id">
         <Notes />
       </AuthenticatedRoute>
+      <Route>
+        <NotFound />
+      </Route>
     </Switch>
   );
 }

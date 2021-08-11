@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
-import { CardElement, injectStripe } from "react-stripe-elements";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import LoaderButton from "./LoaderButton";
 import { useFormFields } from "../libs/hooksLib";
 import "./BillingForm.css";
@@ -12,6 +12,8 @@ function BillingForm({ isLoading, onSubmit, ...props }) {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCardComplete, setIsCardComplete] = useState(false);
+  const stripe = useStripe();
+  const elements = useElements();
 
   isLoading = isProcessing || isLoading;
 
@@ -24,7 +26,9 @@ function BillingForm({ isLoading, onSubmit, ...props }) {
 
     setIsProcessing(true);
 
-    const { token, error } = await props.stripe.createToken({
+    const cardElement = elements.getElement(CardElement);
+
+    const { token, error } = await stripe.createToken(cardElement, {
       name: fields.name,
     });
 
@@ -59,12 +63,14 @@ function BillingForm({ isLoading, onSubmit, ...props }) {
       <CardElement
         className="card-field"
         onChange={(e) => setIsCardComplete(e.complete)}
-        style={{
-          base: {
-            fontSize: "16px",
-            color: "#495057",
-            fontFamily: "'Open Sans', sans-serif",
-          },
+        options={{
+          style: {
+            base: {
+              fontSize: "16px",
+              color: "#495057",
+              fontFamily: "'Open Sans', sans-serif",
+            },
+          }
         }}
       />
       <LoaderButton
@@ -80,4 +86,4 @@ function BillingForm({ isLoading, onSubmit, ...props }) {
   );
 }
 
-export default injectStripe(BillingForm);
+export default BillingForm;

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import { useHistory } from "react-router-dom";
-import { Elements, StripeProvider } from "react-stripe-elements";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import BillingForm from "../components/BillingForm";
 import { onError } from "../libs/errorLib";
 import config from "../config";
@@ -46,18 +47,16 @@ export default function Settings() {
   
   return (
     <div className="Settings">
-      <StripeProvider stripe={stripe}>
-        <Elements
-          fonts={[
-            {
-              cssSrc:
-                "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800",
-            },
-          ]}
-        >
-          <BillingForm isLoading={isLoading} onSubmit={handleFormSubmit} />
-        </Elements>
-      </StripeProvider>
+      <Elements stripe={loadStripe(stripe)}
+        fonts={[
+          {
+            cssSrc:
+              "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800",
+          },
+        ]}
+      >
+        <BillingForm isLoading={isLoading} onSubmit={handleFormSubmit} />
+      </Elements>
     </div>
   );
 }
